@@ -182,6 +182,12 @@ MainWindow::MainWindow(const QUrl &url ,const QUrl &url_ , bool debug, QWidget *
 
     }
 }
+void MainWindow::initializeCAN()
+{
+    int res = CANTP_Initialize_2016(channelValue, baudrateValue, (cantp_hwtype)0, 0, 0);
+    printf("Initialize transmitter: %s\n", STATUS_OK_KO(res));
+    canInitialized = (res == 0); // Assuming 0 means success
+}
 
 void MainWindow::RadioDSC0x01(){
     cantp_handle transmitter=PCANTP_HANDLE_USBBUS1 ;
@@ -240,6 +246,10 @@ void MainWindow::ChoiceLevel(int index){
 }
 void MainWindow::on_btnSendOne_clicked()
 {
+     if (!canInitialized) {
+        QMessageBox::warning(this, "CAN Not Initialized", "The CAN is not initialized. Please initialize the CAN before sending messages.");
+        return;
+    }
     cantp_msg request;
     cantp_msg response;
     bool ok;
@@ -261,6 +271,10 @@ void MainWindow::on_btnSendOne_clicked()
 }
 void MainWindow::on_btnSendTwo_clicked()
 {
+     if (!canInitialized) {
+        QMessageBox::warning(this, "CAN Not Initialized", "The CAN is not initialized. Please initialize the CAN before sending messages.");
+        return;
+    }
     cantp_msg request;
     cantp_msg response;
     bool ok;
@@ -360,6 +374,10 @@ int MainWindow:: onCodeComboBoxChangedLocation(int index) {
 }
 void MainWindow::StartDownload()
 {
+     if (!canInitialized) {
+        QMessageBox::warning(this, "CAN Not Initialized", "The CAN is not initialized. Please initialize the CAN before sending messages.");
+        return;
+    }
     progress = 0;
     ui->progressBar->setValue(progress);
     timer->start(8); // Update every 100 milliseconds
