@@ -124,6 +124,9 @@ private:
 
     QToolButton *toggleButton ;
 
+    void initializeCAN() ;
+    bool canInitialized;
+
 };
 void checkIdLength(MainWindow *window, const QString &text);
 void champSet(MainWindow *window);
